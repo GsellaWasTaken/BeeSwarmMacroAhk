@@ -1,4 +1,4 @@
-;Feel free to change the values in the macro at your own risk
+Feel free to change the values in the macro at your own risk
 
 Before you start the macro remember these:
 

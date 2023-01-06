@@ -343,7 +343,7 @@ While toggle {
 			Sleep 411
 			Send {a up}
 		}
-    	Sleep 100
+    		Sleep 100
 		Send {s down}
 		Sleep 1666
 		Send {s up}

@@ -1,4 +1,4 @@
-1.2.1 Bug Fixes
+1.2.2 Bug Fixes
 
 Feel free to change the values in the macro at your own risk
 

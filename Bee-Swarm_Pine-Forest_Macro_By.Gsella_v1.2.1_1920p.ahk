@@ -5,7 +5,7 @@ SetWorkingDir %A_ScriptDir%
 
 ^q::
 MsgBox, 4096, Before you start, keep in mind: `n`n
--A gifted bee in the 3rd lowest spot on the right most column MUST HAVE! `n
+-A gifted bee in the 3rd lowest spot on the right most column! `n
 -No Gifted Hasty Bee If Walking To Convert `n
 -Play In Fullscreen Mode `n
 -Close The Script = Cntrl E `n
@@ -16,8 +16,9 @@ MsgBox, 4096, Before you start, keep in mind: `n`n
 -Sprinkler in slot 1`n
 -Planter in slot 7`n
 -All hives are supported `n
--Monitor resolution set to 1680 1050p `n
--Rejoining can be a bit buggy
+-Monitor resolution set to 1920 1080p `n
+-Rejoining can be a bit buggy `n `n
+1.2.2
 
 Gui, Color, 4181B2
 Gui, Font, s17 Bahnschrift
@@ -48,7 +49,7 @@ CoordMode, Pixel, Screen
 toggle=1
 While toggle {
 	MainRun:
-		MouseMove, 1920, 1080
+		MouseMove, 1680, 1050
 		Sleep 100
 		send {esc down}
 		sleep 100
@@ -61,12 +62,10 @@ While toggle {
 		Send {enter down}
 		Sleep 100
 		Send {enter up}
-
 		Sleep 11000
 		Send {o down}
 		Sleep 100
 		Send {o up}
-
 		Send {e down}
 		Sleep 50
 		Send {e up}
@@ -167,7 +166,7 @@ While toggle {
 		Sleep 1050
 
 		;Field_Check
-		
+
 		Loopcount2 = 0
 		Pinelist := "0x000000,0x000100,0x010200,0x000200"
 		Loop 13 ;Base value 13
@@ -197,7 +196,7 @@ While toggle {
 		Sleep 100
 		Send {e up}
 		Sleep 1000
-		MouseMove, 1092, 685, 100
+		MouseMove, 1095, 687, 100
 		Sleep 100
 		MouseMove, 1095, 687, 100
 		Click, Left
@@ -236,7 +235,7 @@ While toggle {
 		Click, down
 		Sleep 100
 
-		Loop 111 ;Base value 100
+		Loop 111 ;Base value 111
 		{
 		Send {w down}
 		Sleep 301
@@ -365,25 +364,26 @@ While toggle {
 			IfEqual, color, 0xF2EEEE
 				Break
 			Send {a down}
-			Sleep 1075
+			Sleep 1300
 			PixelGetColor, color, 837, 53
 			IfEqual, color, 0xF2EEEE
 				Break
-			Sleep 1150
+			Sleep 1200
 			PixelGetColor, color, 837, 53
 			IfEqual, color, 0xF2EEEE
 				Break
 			Send {a up}
+			Sleep 10    
 			Send {d down}
-			Sleep 3375
+			Sleep 3555
 			PixelGetColor, color, 837, 53
 			IfEqual, color, 0xF2EEEE
 				Break
-			Sleep 1050
+			Sleep 1275
 			PixelGetColor, color, 837, 53
 			IfEqual, color, 0xF2EEEE
 				Break
-			Sleep 1150
+			Sleep 1240
 			PixelGetColor, color, 837, 53
 			IfEqual, color, 0xF2EEEE
 				Break
@@ -581,22 +581,22 @@ While toggle {
 		Send {e down}
 		Send {e up}
 		Send {d down}
-		Sleep 1400
+		Sleep 1275
 		Send {e down}
 		Send {e up}
-		Sleep 1100
+		Sleep 1200
 		Send {e down}
 		Send {e up}
 		Send {d up}
 		Sleep 50
 		Send {a down}
-		Sleep 3375
+		Sleep 3475
 		Send {e down}
 		Send {e up}
-		Sleep 1175
+		Sleep 1250
 		Send {e down}
 		Send {e up}
-		Sleep 1175
+		Sleep 1225
 		Send {e down}
 		Send {e up}
 		Send {a up}

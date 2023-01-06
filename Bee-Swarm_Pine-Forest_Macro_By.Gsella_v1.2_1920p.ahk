@@ -1,11 +1,13 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+#NoEnv
+SendMode Input
+SetWorkingDir %A_ScriptDir%
 ;Change the values at your own risk
 
 ^q::
 MsgBox, 4096, Before you start, keep in mind: `n`n
--A gifted bee in the 3rd lowest spot on the 2nd right most column MUST HAVE! `n
+-A gifted bee in the 3rd lowest spot on the right most column MUST HAVE! `n
+-No Gifted Hasty Bee If Walking To Convert `n
+-Play In Fullscreen Mode `n
 -Close The Script = Cntrl E `n
 -Reload The Script = Cntrl R `n
 -Pause = Cntrl P`n
@@ -14,7 +16,7 @@ MsgBox, 4096, Before you start, keep in mind: `n`n
 -Sprinkler in slot 1`n
 -Planter in slot 7`n
 -All hives are supported `n
--Monitor resolution set to 1920 1090p `n
+-Monitor resolution set to 1680 1050p `n
 -Rejoining can be a bit buggy
 
 Gui, Color, 4181B2
@@ -165,23 +167,23 @@ While toggle {
 		Sleep 1050
 
 		;Field_Check
-
+		
 		Loopcount2 = 0
-		Pinelist:="0x000000,0x000100,0x010200,0x000200"
+		Pinelist := "0x000000,0x000100,0x010200,0x000200"
 		Loop 13 ;Base value 13
 		{
+			PixelGetColor, color, 1900, 10
 			If color in %Pinelist%
-				Loopcount2 ++
-				PixelGetColor, color, 1900, 10
-				Sleep 500
-					break
+				break
+			Loopcount2 ++
+			Sleep 500
 		}
 			
 		If (Loopcount2 = 13) ;Base value 13
-			{
+		{
 			Sleep 100
 			GoTo, CheckRun
-			}
+		}
 			
 		;Field_Part_1
 
@@ -234,7 +236,6 @@ While toggle {
 		Click, down
 		Sleep 100
 
-		Colorlist:="0x1700F7"
 		Loop 111 ;Base value 100
 		{
 		Send {w down}
@@ -277,7 +278,7 @@ While toggle {
 		Send {d up}
 
         PixelGetColor, Color, 1222, 7
-        IfEqual, Color, %Colorlist%
+        IfEqual, Color, 0x1700F7
             break
 		}
 		

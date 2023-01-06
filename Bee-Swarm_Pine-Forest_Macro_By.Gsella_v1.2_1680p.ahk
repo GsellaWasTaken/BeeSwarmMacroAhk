@@ -1,14 +1,13 @@
-﻿#NoEnv  
-SendMode Input  
-SetWorkingDir %A_ScriptDir% 
-^p::Pause
-^r::Reload
-^e::ExitApp
+#NoEnv
+SendMode Input
+SetWorkingDir %A_ScriptDir%
 ;Change the values at your own risk
 
 ^q::
 MsgBox, 4096, Before you start, keep in mind: `n`n
--A gifted bee in the 3rd lowest spot on right most column MUST HAVE! `n
+-A gifted bee in the 3rd lowest spot on the right most column MUST HAVE! `n
+-No Gifted Hasty Bee If Walking To Convert `n
+-Play In Fullscreen Mode `n
 -Close The Script = Cntrl E `n
 -Reload The Script = Cntrl R `n
 -Pause = Cntrl P`n
@@ -77,8 +76,8 @@ While toggle {
 		While GettingColor
 		{
 			PixelGetColor, color, 719, 64
-				If (color != 0xF2EEEE)
-					GettingColor := False
+			If (color != 0xF2EEEE)
+				GettingColor := False
 			Sleep 3000
 		}
 
@@ -170,21 +169,21 @@ While toggle {
 		;Field_Check
 
 		Loopcount2 = 0
-		Pinelist:="0x000000,0x000100,0x010200,0x000200"
+		Pinelist := "0x000000,0x000100,0x010200,0x000200"
 		Loop 13 ;Base value 13
 		{
+			PixelGetColor, color, 1666, 10
 			If color in %Pinelist%
-				Loopcount2 ++
-				PixelGetColor, color, 1666, 10
-				Sleep 500
-					break
+				break
+			Loopcount2 ++
+			Sleep 500
 		}
 			
 		If (Loopcount2 = 13) ;Base value 13
-			{
+		{
 			Sleep 100
 			GoTo, CheckRun
-			}
+		}
 			
 		;Field_Part_1
 
@@ -237,8 +236,7 @@ While toggle {
 		Click, down
 		Sleep 100
 
-		Colorlist:="0x1700F7"
-		Loop 100 ;Base value 100
+		Loop 111 ;Base value 100
 		{
 		Send {w down}
 		Sleep 301
@@ -280,7 +278,7 @@ While toggle {
 		Send {d up}
 
         PixelGetColor, Color, 1100, 10
-        IfEqual, Color, %Colorlist%
+        IfEqual, Color, 0x1700F7
             break
 		}
 		
@@ -402,8 +400,8 @@ While toggle {
 		While GettingColor
 		{
 			PixelGetColor, color, 719, 64
-				If (color != 0xF2EEEE)
-					GettingColor := False
+			If (color != 0xF2EEEE)
+				GettingColor := False
 			Sleep 3000
 		}
 		Sleep 4000
@@ -620,3 +618,7 @@ While toggle {
 GuiEscape:
 Reload
 Return
+
+^p::Pause
+^r::Reload
+^e::ExitApp

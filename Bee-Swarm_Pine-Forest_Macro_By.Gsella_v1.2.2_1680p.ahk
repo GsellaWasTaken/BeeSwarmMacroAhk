@@ -2,12 +2,11 @@
 SendMode Input
 SetWorkingDir %A_ScriptDir%
 ;Change the values at your own risk
-
-^q::
 ^p::Pause
 ^r::Reload
 ^e::ExitApp
 
+^q::
 MsgBox, 4096, Before you start, keep in mind: `n`n
 -A gifted bee in the 3rd lowest spot on the right most column! `n
 -No Gifted Hasty Bee If Walking To Convert `n

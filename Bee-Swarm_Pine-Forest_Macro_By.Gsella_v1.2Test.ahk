@@ -1,14 +1,13 @@
-﻿#NoEnv  
-SendMode Input  
-SetWorkingDir %A_ScriptDir% 
-^p::Pause
-^r::Reload
-^e::ExitApp
+#NoEnv
+SendMode Input
+SetWorkingDir %A_ScriptDir%
 ;Change the values at your own risk
 
 ^q::
 MsgBox, 4096, Before you start, keep in mind: `n`n
--A gifted bee in the 3rd lowest spot on right most column MUST HAVE! `n
+-A gifted bee in the 3rd lowest spot on the right most column MUST HAVE! `n
+-No Gifted Hasty Bee If Walking To Convert `n
+-Play In Fullscreen Mode `n
 -Close The Script = Cntrl E `n
 -Reload The Script = Cntrl R `n
 -Pause = Cntrl P`n
@@ -77,8 +76,8 @@ While toggle {
 		While GettingColor
 		{
 			PixelGetColor, color, 719, 64
-				If (color != 0xF2EEEE)
-					GettingColor := False
+			If (color != 0xF2EEEE)
+				GettingColor := False
 			Sleep 3000
 		}
 
@@ -170,14 +169,14 @@ While toggle {
 		;Field_Check
 
 		Loopcount2 = 0
-		Pinelist:="0x000000,0x000100,0x010200,0x000200"
+		Pinelist := "0x000000,0x000100,0x010200,0x000200"
 		Loop 13 ;Base value 13
 		{
+			PixelGetColor, color, 1666, 10
 			If color in %Pinelist%
-				Loopcount2 ++
-				PixelGetColor, color, 1666, 10
-				Sleep 500
-					break
+				break
+			Loopcount2 ++
+			Sleep 500
 		}
 			
 		If (Loopcount2 = 13) ;Base value 13
@@ -237,7 +236,6 @@ While toggle {
 		Click, down
 		Sleep 100
 
-		Colorlist:="0x1700F7"
 		Loop 1 ;Base value 100
 		{
 		Send {w down}
@@ -280,11 +278,11 @@ While toggle {
 		Send {d up}
 
         PixelGetColor, Color, 1100, 10
-        IfEqual, Color, %Colorlist%
+        IfEqual, Color, 0x1700F7
             break
 		}
 		
-		If (Convert_State = "Reset") 
+		If (Convert_State = "Reset") ;True if reseting to convert
 		{
 			Goto MainRun
 		}
@@ -320,7 +318,7 @@ While toggle {
 		Send {w up}
 		Sleep 1333
 		PixelGetColor, color, 719, 64
-		If (color = 0xF2EEEE)
+		If (color = 0xF2EEEE) ;Check polar bears feast
 		{
 			Send {e down}
 			Sleep 50
@@ -361,7 +359,7 @@ While toggle {
 		Sleep 650
 		Send {w up}
 		Sleep 150
-		Loop 
+		Loop ;Check for own hive if walk to convert
 		{
 			PixelGetColor, color, 719, 64
 			IfEqual, color, 0xF2EEEE
@@ -402,8 +400,8 @@ While toggle {
 		While GettingColor
 		{
 			PixelGetColor, color, 719, 64
-				If (color != 0xF2EEEE)
-					GettingColor := False
+			If (color != 0xF2EEEE)
+				GettingColor := False
 			Sleep 3000
 		}
 		Sleep 4000
@@ -562,7 +560,7 @@ While toggle {
 
 	GoTo, MainRun ;If something bad happens this is here as a failsafe
 
-	;After x amount of fails rejoins to the game
+	;After x amount of fails, rejoins the game
 
 	Runcount = 0
 	Restart:
@@ -620,3 +618,7 @@ While toggle {
 GuiEscape:
 Reload
 Return
+
+^p::Pause
+^r::Reload
+^e::ExitApp

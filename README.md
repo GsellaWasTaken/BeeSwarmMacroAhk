@@ -13,3 +13,4 @@ Before you start the macro remember these:
 -All hives are supported 
 -Monitor resolution set to 1680 1050p 
 -Rejoining can be a bit buggy
+-

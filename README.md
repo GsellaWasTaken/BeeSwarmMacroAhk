@@ -1,7 +1,7 @@
 ;Feel free to change the values in the macro at your own risk
 
 Before you start the macro remember these:
--A gifted bee in the 3rd lowest spot on right most column MUST HAVE! `n
+-A gifted bee in the 3rd lowest spot on right most column MUST HAVE! \n
 -Play In Fullscreen Mode
 -Close The Script = Cntrl E
 -Reload The Script = Cntrl R

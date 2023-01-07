@@ -19,9 +19,10 @@ MsgBox, 4096, Before you start, keep in mind: `n`n
 -Sprinkler in slot 1`n
 -Planter in slot 7`n
 -All hives are supported `n
+-If You Are On Laptop Use 100 Precent Screen Scale! `n
 -Monitor resolution set to 1680 1050p `n
--Rejoining can be a bit buggy `n `n
-1.2.2
+-Rejoining can be a bit buggy `n
+;1.2.2
 
 Gui, Color, 4181B2
 Gui, Font, s17 Bahnschrift
@@ -346,7 +347,7 @@ While toggle {
 			Sleep 411
 			Send {a up}
 		}
-    		Sleep 100
+    	Sleep 100
 		Send {s down}
 		Sleep 1666
 		Send {s up}
@@ -362,7 +363,7 @@ While toggle {
 		Send {w up}
 		Sleep 150
 		Loop 
-		{
+		{	
 			PixelGetColor, color, 719, 64
 			IfEqual, color, 0xF2EEEE
 				Break
@@ -378,15 +379,15 @@ While toggle {
 			Send {a up}
 			Sleep 10    
 			Send {d down}
-			Sleep 3555
+			Sleep 3725
 			PixelGetColor, color, 719, 64
 			IfEqual, color, 0xF2EEEE
 				Break
-			Sleep 1275
+			Sleep 1150
 			PixelGetColor, color, 719, 64
 			IfEqual, color, 0xF2EEEE
 				Break
-			Sleep 1240
+			Sleep 1150
 			PixelGetColor, color, 719, 64
 			IfEqual, color, 0xF2EEEE
 				Break
@@ -584,7 +585,7 @@ While toggle {
 		Send {e down}
 		Send {e up}
 		Send {d down}
-		Sleep 1275
+		Sleep 1300
 		Send {e down}
 		Send {e up}
 		Sleep 1200
@@ -593,13 +594,13 @@ While toggle {
 		Send {d up}
 		Sleep 50
 		Send {a down}
-		Sleep 3475
+		Sleep 3725
 		Send {e down}
 		Send {e up}
-		Sleep 1250
+		Sleep 1150
 		Send {e down}
 		Send {e up}
-		Sleep 1225
+		Sleep 1150
 		Send {e down}
 		Send {e up}
 		Send {a up}

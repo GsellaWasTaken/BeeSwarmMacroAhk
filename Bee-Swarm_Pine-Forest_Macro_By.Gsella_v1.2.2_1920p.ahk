@@ -2,56 +2,26 @@
 SendMode Input
 SetWorkingDir %A_ScriptDir%
 ;Change the values at your own risk
-^p::Pause
-^r::Reload
-^e::ExitApp
+;1.3.1
 
-^q::
-MsgBox, 4096, Before you start, keep in mind: `n`n
--A gifted bee in the 3rd lowest spot on the right most column! `n
--No Gifted Hasty Bee If Walking To Convert `n
--Play In Fullscreen Mode `n
--Close The Script = Cntrl E `n
--Reload The Script = Cntrl R `n
--Pause = Cntrl P`n
--Graphics set to 1 `n
--Player speed 28`n
--Sprinkler in slot 1`n
--Planter in slot 7`n
--All hives are supported `n
--If You Are On Laptop Use 100 Precent Screen Scale! `n
--Monitor resolution set to 1920 1080p `n
--Rejoining can be a bit buggy `n
-;1.2.2
-
-Gui, Color, 4181B2
-Gui, Font, s17 Bahnschrift
-Gui, +AlwaysOnTop
-Gui, Show, Center w300 h150, Wealth Clock,
-Gui, Add, Button, x50 y20 w200 h50 gClose_Button, Collect
-Gui, Add, Button, x50 y80 w200 h50 gClose_Button, Don't Collect 
-Return
-
-Close_Button:
-Gui, Submit
-Wealth_State = %A_GuiControl%
-
-Gui, Two: Color, 4181B2
-Gui, Two: Font, s17 Bahnschrift
-Gui, Two: +AlwaysOnTop
-Gui, Two: Show, Center w300 h150, Convert
-Gui, Two: Add, Button, x50 y20 w200 h50 gClose_Button2, Walk
-Gui, Two: Add, Button, x50 y80 w200 h50 gClose_Button2, Reset
-return
-
-Close_Button2:
-Gui, Two: Submit
-Convert_State = %A_GuiControl%
 LoopcountMain = 0 ;Base value 0
 CoordMode, Pixel, Screen
 
-toggle=1
-While toggle {
+LogFileName := "PlanterLog.txt"
+ChoicesFileName := "Choices.txt"
+
+FileRead, Content, %ChoicesFileName%
+Loop, Parse, Content, `n, `r
+	RegExMatch(A_LoopField, "(?<Wealth>.+)\t(?<Convert>.+)\t(?<Sprinkler>.+)\t(?<Planter>.+)", $) ;Looking For The Made Choises In The Startup
+	Wealth_State := $Wealth
+	Convert_State := $Convert
+	Sprinkler_State := $Sprinkler
+	Planter_State := $Planter
+
+;Ready, Set, Go!
+
+Toggle = 1
+While Toggle {
 	MainRun:
 		MouseMove, 1920, 1080
 		Sleep 100
@@ -108,7 +78,7 @@ While toggle {
 			GoTo, CheckRun
 		}
 
-		Sleep 3500
+		Sleep 1500
 
 		If (Wealth_State = "Collect")
 			If (LoopcountMain = 4) ;Base value 4
@@ -125,11 +95,86 @@ While toggle {
 		Sleep 8000
 		Send {a up}
 
+		If (Planter_State = "Use")
+		{
+			FileRead, Contents, %LogFileName% ;Checking for the file that comes from the PlanterTimer.ahk
+			Loop, Parse, Contents, `n, `r
+				RegExMatch(A_LoopField, "(?<Log>.+)", $)
+				PlanterRun := $Log
+		}
+
+		If (PlanterRun = "PlanterDone") ;Planter run
+		{
+			Send {w down}
+			Sleep 3500
+			Send {w up}
+			Send {s down}
+			Sleep 150
+			Send {s up}
+			Sleep 100
+			Send {space down}
+			Sleep 50
+			Send {space up}
+			Send {w down}
+			Sleep 1250
+			Send {w up}
+			Sleep 100
+			MouseMove, 1060, 677, 100
+			Sleep 100
+			MouseMove, 1063, 678, 100
+			Send {e down}
+			Sleep 50
+			Send {e up}
+			Loop 8
+			{
+				Click, Left
+			}
+			MouseMove, 1920, 1080
+			Sleep 150
+			Send {6 down}
+			Sleep 50
+			Send {6 up}
+			Sleep 100
+			Send {w down}
+			Sleep 1000
+			Send {d down}
+			Sleep 2750
+			Send {d up}
+			Sleep 2500
+			Send {space down}
+			Sleep 50
+			Send {space up}
+			Sleep 2000
+			Send {w up}
+			Send {d down}
+			Sleep 2000
+			Send {d up}
+			Sleep 100
+			MouseMove, 1060, 677, 100
+			Sleep 100
+			MouseMove, 1063, 678, 100
+			Send {e down}
+			Sleep 50
+			Send {e up}
+			Loop 8
+			{
+				Click, Left
+			}
+			MouseMove, 1920, 1080
+			Sleep 150
+			Send {5 down}
+			Sleep 50
+			Send {5 up}
+			Sleep 100
+			FileRead, Contents, %LogFileName%
+			PlanterRun := RegExReplace("Log `nPlanterWait", $)
+			FileDelete, %LogFileName%
+			FileAppend, %PlanterRun%, %LogFileName%
+			Goto MainRun
+		}
+
 		Sleep 250
 
-		Send {space down}
-		Sleep 50
-		Send {space up}
 		Send {space down}
 		Sleep 50
 		Send {space up}
@@ -199,26 +244,25 @@ While toggle {
 		Send {e down}
 		Sleep 100
 		Send {e up}
-		Sleep 1000
 		MouseMove, 1060, 677, 100
 		Sleep 100
 		MouseMove, 1063, 678, 100
-		Click, Left
-		Click, Left
-		Click, Left
-		Click, Left
-		Click, Left
-		Click, Left
-		Click, Left
-		Click, Left
+		Loop 8 
+		{
+			Click, Left
+		}
 		Sleep 150
-		Send {Space down}
-		Sleep 50
-		Send {Space up}
-		Send {1 down}
-		Sleep 150
-		Send {1 up}
-		Sleep 500
+		Loop, %Sprinkler_State%
+		{
+			Send {Space down}
+			Sleep 50
+			Send {Space up}
+			Sleep 100
+			Send {1 down}
+			Sleep 150
+			Send {1 up}
+			Sleep 1100
+		}
 		Send {7 down}
 		Sleep 100
 		Send {7 up}
@@ -319,7 +363,7 @@ While toggle {
 		Send {w down}
 		Sleep 1025
 		Send {w up}
-		Sleep 1333
+		Sleep 1111
 		PixelGetColor, color, 818, 45
 		If (color = 0xF2EEEE)
 		{
@@ -356,50 +400,36 @@ While toggle {
 		Sleep 50
 		Send {space up}
 		Send {s down}	
-		Sleep 16690
+		Sleep 15750
 		Send {s up}
 		Send {w down}	
 		Sleep 675
 		Send {w up}
-		Sleep 150
-		Loop 
+		Sleep 200
+		Loop 2
+		{
+			Send {. down}
+			Send {. up}
+			Send {shift down}
+			Send {Shift up}
+		}
+		MouseMove, 1920, 1080
+		Sleep 200
+		Loop 5
 		{	
 			PixelGetColor, color, 818, 45
 			IfEqual, color, 0xF2EEEE
 				Break
-			Send {a down}
-			Sleep 1300
-			PixelGetColor, color, 818, 45
-			IfEqual, color, 0xF2EEEE
-				Break
-			Sleep 1200
-			PixelGetColor, color, 818, 45
-			IfEqual, color, 0xF2EEEE
-				Break
-			Send {a up}
-			Sleep 10    
-			Send {d down}
-			Sleep 3725
-			PixelGetColor, color, 818, 45
-			IfEqual, color, 0xF2EEEE
-				Break
-			Sleep 1150
-			PixelGetColor, color, 818, 45
-			IfEqual, color, 0xF2EEEE
-				Break
-			Sleep 1150
-			PixelGetColor, color, 818, 45
-			IfEqual, color, 0xF2EEEE
-				Break
-			If !ErrorLevel
-				break
+			Send {w down}
+			Sleep 1175
+			Send {w up}
+			Sleep 200
 		}
-		Send {a up}
-		Send {d up}
-		Sleep 50
+		Sleep 100
 		Send {e down}
 		Sleep 50
 		Send {e up}
+
 		GettingColor := True
 		While GettingColor
 		{
@@ -618,7 +648,7 @@ While toggle {
 		Goto, Restart
 
 }
-
-GuiEscape:
-Reload
 Return
+
+^p::Pause
+^e::ExitApp

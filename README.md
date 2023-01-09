@@ -8,7 +8,7 @@ Option to choose sprinkler amount
 
 Option to use 3 planters
 
-Feel free to change the values in the macro at your own risk
+-------------------------------------------------------
 
 Before you start the macro remember these:
 

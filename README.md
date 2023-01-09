@@ -1,4 +1,9 @@
-1.3.2 Bug Fixes
+1.3.2 Bug
+
+Additions:
+New walk to convert path
+Option to choose sprinkler amount
+Option to use 3 planters
 
 Feel free to change the values in the macro at your own risk
 

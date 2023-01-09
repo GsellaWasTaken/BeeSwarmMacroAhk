@@ -88,7 +88,7 @@ Wealth`tConvert`tSprinkler`tPlanter
 
 Sleep 2000
 
-Run, Bee-Swarm_Pine-Forest_Macro_By.Gsella_v1.3.1_1920p.Ahk
+Run, Bee-Swarm_Pine-Forest_Macro.Ahk
 
 If (Planter_State = "Use")
 {

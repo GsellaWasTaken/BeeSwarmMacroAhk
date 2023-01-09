@@ -299,7 +299,7 @@ While Toggle {
 		Click, down
 		Sleep 100
 
-		Loop 1 ;Base value 111
+		Loop 111 ;Base value 111
 		{
 		Send {w down}
 		Sleep 301

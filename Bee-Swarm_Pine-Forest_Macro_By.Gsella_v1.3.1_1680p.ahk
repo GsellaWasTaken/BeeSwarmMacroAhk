@@ -432,13 +432,13 @@ While Toggle {
 			Send {shift down}
 			Send {Shift up}
 		}
-		MouseMove, 1920, 1080
+		MouseMove, 1680, 1050
 		Sleep 200
 		Loop 3 ;Base value 3
 		{
 			Loop 6 ;Base value 6
 			{	
-				PixelGetColor, color, 818, 45
+				PixelGetColor, color, 719, 64
 				IfEqual, color, 0xF2EEEE
 					Break
 				Send {w down}

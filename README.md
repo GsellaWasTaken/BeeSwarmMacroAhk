@@ -20,8 +20,6 @@ Play In Fullscreen Mode
 
 Close The Script = Cntrl E
 
-Reload The Script = Cntrl R
-
 Pause = Cntrl P
 
 Graphics set to 1

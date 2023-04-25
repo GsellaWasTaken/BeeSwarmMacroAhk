@@ -27,10 +27,10 @@ F2: Pause Macro
 F3: Stop Macro
 F4: Back To Startup Gui
 
-Macro made by:-------------------------
-Github = GsellaWasTaken-------------------
-Roblox = gsella20----------------------
+Macro made by
+Github = GsellaWasTaken
+Roblox = gsella20
 
-Testers:-------------------------------
-Roblox = redman2005tanki------------------
-Roblox = The_Flailmaker----------------
+Testers:
+Roblox = redman2005tanki-
+Roblox = The_Flailmaker

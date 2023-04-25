@@ -39,8 +39,8 @@ Sleep 250
 Guii:
 Sleep 1250
 Gui Destroy
-Gui, Font, s10
 Gui, Show, w500 h300
+Gui, Font, s10
 Gui, Add, Picture, y1 x375 w100 h80, %pictureBee%
 Gui, Add, GroupBox, x25 y0 w450 h275
 Gui, Add, GroupBox, x25 y0 w150 h100
@@ -1597,9 +1597,6 @@ TimelineAdd = %TimeRn% Macro Stopped`n
 FileAppend, %TimelineAdd%, %TimelineFile%
 Sleep 50
 ExitApp
-F4::
-Reload
-Sleep 1000
-goto, Guii
+F4::Reload
 GuiClose:
 ExitApp

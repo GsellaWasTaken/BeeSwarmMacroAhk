@@ -4,7 +4,7 @@ Features:
 
 -Planters
 
--Borderrd Fullscreen detection
+-Bordered Fullscreen detection
 
 -Rejoining
 

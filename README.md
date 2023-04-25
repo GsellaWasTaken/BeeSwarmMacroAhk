@@ -1,14 +1,23 @@
 Bee Swarm Simulator Pine Forest Macro
 
 Features:
+
 -Planters
+
 -Borderless Fullscreen detection
+
 -Rejoining
+
 -Wealth clock/Stockings
+
 -Macro session statistics webpag "Still under work"
+
 Startup gui with choises such as:
+
 -Way to convert [Walk] or [Reset]
+
 -Sprinkler amount [1,2,3,4]
+
 -Option to add private server link.
 
 --IMPORTANT--

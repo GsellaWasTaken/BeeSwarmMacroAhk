@@ -58,6 +58,6 @@ Roblox = gsella20
 
 Testers:
 
-Roblox = redman2005tanki-
+Roblox = redman2005tanki
 
 Roblox = The_Flailmaker

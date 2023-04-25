@@ -38,6 +38,10 @@ Sleep 250
 
 Guii:
 Sleep 1250
+FormatTime, TimeRn,, Time ;Omits time
+TimelineAdd = %TimeRn% In start up Gui`n
+FileAppend, %TimelineAdd%, %TimelineFile%
+Sleep 250
 Gui Destroy
 Gui, Show, w500 h300
 Gui, Font, s10
@@ -1597,6 +1601,8 @@ TimelineAdd = %TimeRn% Macro Stopped`n
 FileAppend, %TimelineAdd%, %TimelineFile%
 Sleep 50
 ExitApp
-F4::Reload
+F4::
+
+goto, Guii
 GuiClose:
 ExitApp

@@ -17,6 +17,7 @@ Cpu: 4 cores | Core clock: 1.6Ghz/better                        -
 Gpu: Seperate Graphics Card | Nvidia Geforece Gtx 460           -
 Ram: 4Gb                                                        -
 Game Running: 45+ fps                                           -
+                                                                -
 -----------------------------------------------------------------
 
 --IMPORTANT--
@@ -34,6 +35,7 @@ After these steps you should be all set and ready to macro!
 F2: Pause Macro
 F3: Stop Macro
 F4: Back To Startup Gui
+F5: Close Sub Macros
 
 ------------------------------------
 Macro made by:-------------------------

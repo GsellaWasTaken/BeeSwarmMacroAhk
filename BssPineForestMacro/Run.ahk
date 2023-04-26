@@ -4,70 +4,56 @@ SendMode, Input
 SetBatchLines, -1
 SetWorkingDir, %A_ScriptDir%
 
-FileInstall, bee.png, %A_ScriptDir%\Webpage\Images
-
 CoordMode, Pixel, Screen
+GuiFile := GuiData.txt
 TimelineFile = %A_ScriptDir%\Webpage\Timeline.txt
 PlanterFileName := "PlanterLog.txt"
 FieldFile := "Fields.txt"
+GuiFile := "GuiChoices.txt"
+sprinkList :="1||2|3|4|"
+convList :="Walk||Reset|"
 attemptfail := 0
 collectFail := 0
 tillClock := 0
 pictureBee = %A_ScriptDir%\Webpage\Images\bee.png
+FileInstall, bee.png, %A_ScriptDir%\Webpage\Images
 FormatTime, TimeRn,, Time ;Omits time
 Run, PlanterTimer.Ahk
-
-If Not FileExist(FieldFile)
-{
-    FileAppend,Field1`tField2`nSpider`tPumpkin, %FieldFile%
-}
-Sleep 250
-FileDelete, %TimelineFile%
-FileAppend, 
-(
-C:\Users\Bee Swarmer\Desktop\PineForestMacro.Ahk
->run TrackPastEvents.exe
-TrackPastEvents.exe: [y] to continue [e] to exit
-y
------------------------------------------------------------
------------------------PAST-EVENTS-------------------------
------------------------------------------------------------
-%TimeRn% Macro Started`n
-), %TimelineFile%
-Sleep 250
+goto, start
 
 Guii:
-Sleep 1250
-FormatTime, TimeRn,, Time ;Omits time
-TimelineAdd = %TimeRn% In start up Gui`n
-FileAppend, %TimelineAdd%, %TimelineFile%
-Sleep 250
-Gui Destroy
-Gui, Show, w500 h300
-Gui, Font, s10
-Gui, Add, Picture, y1 x375 w100 h80, %pictureBee%
-Gui, Add, GroupBox, x25 y0 w450 h275
-Gui, Add, GroupBox, x25 y0 w150 h100
-Gui, Add, GroupBox, x25 y90 w150 h100
-Gui, Add, GroupBox, x25 y180 w450 h95
-Gui, Add, GroupBox, x154 y201 w302 h37
-Gui, Add, Button, x195 y251 w100 h40 gcloseButton, Confirm
-Gui, Add, Text, y25 x75, Convert
-Gui, Add, Text, y115 x68, Sprinklers
-Gui, Add, Text, y215 x37, Private Server Link:
-Gui, Add, Text, y90 x265 cGreen, More to Be Added?
-Gui, font, s8 cBlue
-Gui, Add, Text, y280 x20, F2=Pause F3=Stop F4=Return Gui
-Gui, Add, Text, y280 x390, Macro version: 1.4
-Gui, Font, s10 cBlack
-Gui, Add, DropDownList, w80 h10 y50 x60 r2 vConvert_State, Walk|Reset
-Gui, Add, DropDownList, w80 h10 y140 x60 r4 vSprinkler_State, 1|2|3|4
-Gui, Add, Edit, y210 x155 w300 h25 vpServer_State,
-Gui, +AlwaysOnTop
-return ;Basic gui
+    FormatTime, TimeRn,, Time ;Omits time
+    TimelineAdd = %TimeRn% In start up Gui`n
+    FileAppend, %TimelineAdd%, %TimelineFile%
+    Sleep 250
+    Gui Destroy
+    Gui, Show, w500 h300
+    Gui, Font, s10
+    Gui, Add, Picture, y1 x375 w100 h80, %pictureBee%
+    Gui, Add, GroupBox, x25 y0 w450 h275
+    Gui, Add, GroupBox, x25 y0 w150 h100
+    Gui, Add, GroupBox, x25 y90 w150 h100
+    Gui, Add, GroupBox, x25 y180 w450 h95
+    Gui, Add, GroupBox, x154 y201 w302 h37
+    Gui, Add, Button, x195 y251 w100 h40 gcloseButton, Confirm
+    Gui, Add, Text, y25 x75, Convert
+    Gui, Add, Text, y115 x68, Sprinklers
+    Gui, Add, Text, y215 x37, Private Server Link:
+    Gui, Add, Text, y90 x265 cGreen, More to Be Added?
+    Gui, font, s8 cBlue
+    Gui, Add, Text, y280 x20, F2=Pause F3=Stop F4=Return Gui
+    Gui, Add, Text, y280 x390, Macro version: 1.4
+    Gui, Font, s10 cBlack
+    Gui, Add, DropDownList, w80 h10 y50 x60 r2 vConvert_State, %convList%
+    Gui, Add, DropDownList, w80 h10 y140 x60 r4 vSprinkler_State, %sprinkList%
+    Gui, Add, Edit, y210 x155 w300 h25 vpServer_State, %pServer_State%
+    Gui, +AlwaysOnTop
+    return ;Basic gui
 
 closeButton:
     Gui Submit
+    FileDelete, %GuiFile%
+    FileAppend,1Choice`n%pServer_State%,%GuiFile%
     If pServer_State =
     {
         pServer_State = https://www.roblox.com/games/4189852503?privateServerLinkCode=79206701614713356673660100749569 ;If no private server this will become the join link
@@ -1594,6 +1580,31 @@ checkRun: ;If attempt fails this strats counting the fails until 4 are made in r
     Else
         goto, beginning
 
+start:
+FileDelete, %TimelineFile%
+If Not FileExist(FieldFile)
+{
+    FileAppend,Field1`tField2`nSpider`tPumpkin, %FieldFile%
+}
+Sleep 250
+FileAppend, 
+(
+C:\Users\Bee Swarmer\Desktop\PineForestMacro.Ahk
+>run TrackPastEvents.exe
+TrackPastEvents.exe: [y] to continue [e] to exit
+y
+-----------------------------------------------------------
+-----------------------PAST-EVENTS-------------------------
+-----------------------------------------------------------
+%TimeRn% Macro Started`n
+), %TimelineFile%
+FileRead, Content, %GuiFile% ;Gets data from a file called Fields.txt and saves the data into variables
+Loop, Parse, Content, `n, `r
+    RegExMatch(A_LoopField, "(?<1Choice>.+)", $)
+pServer_State := $1Choice
+Sleep 1250
+goto, Guii
+    
 F2::Pause
 F3::
 FormatTime, TimeRn,, Time ;Omits time
@@ -1601,8 +1612,6 @@ TimelineAdd = %TimeRn% Macro Stopped`n
 FileAppend, %TimelineAdd%, %TimelineFile%
 Sleep 50
 ExitApp
-F4::
-
-goto, Guii
+F4::Reload
 GuiClose:
 ExitApp

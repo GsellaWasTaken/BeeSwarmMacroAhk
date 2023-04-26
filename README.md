@@ -12,7 +12,7 @@ Features:
 
 -Macro session statistics webpage "Still under work"
 
-Startup gui with choises such as:
+Startup gui with choices such as:
 
 -Way to convert [Walk] or [Reset]
 

@@ -466,7 +466,7 @@ beforeBack:
 
 ;-------------------------WALK-BACKS-------------------------
 
-walkToHiveStrawberry:
+walkToHiveStrawberry: ;Returns player to the hive via walking
     Send {w down}
     Sleep 1000
     Send {w up}
@@ -514,8 +514,8 @@ walkToHiveStrawberry:
     Sleep 250
     goto, findHive
 
-walkToHivePineForest: ;Returns player to the hive if the loop has ended
-    Sleep 250 ;Returns player to the hive via walking
+walkToHivePineForest: ;Returns player to the hive via walking
+    Sleep 250
     loop 2
     {
     Send {.}
@@ -584,7 +584,7 @@ walkToHivePineForest: ;Returns player to the hive if the loop has ended
 
 ;-------------------------END-OF-WALK-BACKS-------------------------
 
-findHive:
+findHive: ;A snip of code that that moves the player to each hiveslot and checks if it's theirs, then stops and starts converting
     MouseMove, 818, 45
     hiveNotFound = 0
     Loop 3
@@ -649,31 +649,53 @@ findHive:
     goto, beginning
 
 ;-------------------------PLANTERS-------------------------
+
 planterRuns: ;These are run in order from top to bottom
     Sleep 250
     attemptFail = 0
     Sleep 250
-    If (Planter1 = "Planter1Done" or Planter1 = "Planter1Wait")
-        {
+    If (Planter1 = "Planter1Done")
+    {
         FormatTime, TimeRn,, Time ;Omits time
         TimelineAdd = %TimeRn% Going to PineTree Field`n
         FileAppend, %TimelineAdd%, %TimelineFile%
             goto, pRun1
-        }
-    If (Planter2 = "Planter2Done" or Planter2 = "Planter2Wait")
-        {
+    }
+    If (Planter2 = "Planter2Done")
+    {
         FormatTime, TimeRn,, Time ;Omits time
         TimelineAdd = %TimeRn% Going to %Field1% Field`n
         FileAppend, %TimelineAdd%, %TimelineFile%
             goto, pRun%Field1%
-        }
-    If (Planter3 = "Planter3Done" or Planter3 = "Planter3Wait")
-        {
+    }
+    If (Planter3 = "Planter3Done")
+    {
         FormatTime, TimeRn,, Time ;Omits time
         TimelineAdd = %TimeRn% Going to %Field2% Field`n
         FileAppend, %TimelineAdd%, %TimelineFile%
             goto, pRun%Field2%
-        }
+    }
+    If (Planter1 = "Planter1Wait")
+    {
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Going to PineTree Field`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+            goto, pRun1
+    }
+    If (Planter2 = "Planter2Wait")
+    {
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Going to %Field1% Field`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+            goto, pRun%Field1%
+    }
+    If (Planter3 = "Planter3Wait")
+    {
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Going to %Field2% Field`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+            goto, pRun%Field2%
+    }
 
 pRun1:
     Sleep 250
@@ -736,7 +758,7 @@ pRun1:
     If (Planter1 = "Planter1Wait")
     {
         FileRead, Contents, %PlanterFileName%
-        Replace := RegExReplace("Log1`tLog2`tLog3`n0`tPlanter2Done`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`tPlanter2Wait`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
         FileDelete, %PlanterFileName%
         FileAppend, %Replace%, %PlanterFileName%
         FormatTime, TimeRn,, Time ;Omits time
@@ -833,7 +855,7 @@ pRunRose:
     If (Planter2 = "Planter2Wait")
     {
         FileRead, Contents, %PlanterFileName%
-        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
         FileDelete, %PlanterFileName%
         FileAppend, %Replace%, %PlanterFileName%
         FormatTime, TimeRn,, Time ;Omits time
@@ -869,7 +891,7 @@ pRunRose:
             goto, beginning
         }
         FileRead, Contents, %PlanterFileName%
-        Replace := RegExReplace("Log1`tLog2`tLog3`n0`tPlanter2Wait`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        Replace := RegExReplace("Log1`tLog2`tLog3`nPlanter1Wait`tPlanter2Wait`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
         FileDelete, %PlanterFileName%
         FileAppend, %Replace%, %PlanterFileName%
         FileRead, Contents, %FieldFile%
@@ -929,7 +951,7 @@ pRunSpider:
     {
         Sleep 250
         FileRead, Contents, %PlanterFileName%
-        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
         FileDelete, %PlanterFileName%
         FileAppend, %Replace%, %PlanterFileName%
         FormatTime, TimeRn,, Time ;Omits time
@@ -966,7 +988,7 @@ pRunSpider:
         }
         Sleep 250
         FileRead, Contents, %PlanterFileName%
-        Replace := RegExReplace("Log1`tLog2`tLog3`n0`tPlanter2Wait`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        Replace := RegExReplace("Log1`tLog2`tLog3`nPlanter1Wait`tPlanter2Wait`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
         FileDelete, %PlanterFileName%
         FileAppend, %Replace%, %PlanterFileName%
         FileRead, Contents, %FieldFile%
@@ -1060,7 +1082,7 @@ pRunPumpkin:
         }
         Sleep 250
         FileRead, Contents, %PlanterFileName%
-        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        Replace := RegExReplace("Log1`tLog2`tLog3`nPlanter1Wait`tPlanter2Wait`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
         FileDelete, %PlanterFileName%
         FileAppend, %Replace%, %PlanterFileName%
         FileRead, Contents, %FieldFile%
@@ -1157,7 +1179,7 @@ pRunStrawberry:
         }
         Sleep 250
         FileRead, Contents, %PlanterFileName%
-        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        Replace := RegExReplace("Log1`tLog2`tLog3`nPlanter1Wait`tPlanter2Wait`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
         FileDelete, %PlanterFileName%
         FileAppend, %Replace%, %PlanterFileName%
         FileRead, Contents, %FieldFile%

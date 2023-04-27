@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Scrollbar couldn't be hidden from css or html solution width 105% (line 23)-->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro Session Statistics</title>
+    <link rel="stylesheet" href="style.css"> 
+<style>
+    body {
+        overflow: hidden;
+        background-color: #202020;
+    }
+    iframe {
+        overflow-y: hidden;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script type="file" src="ChartData.csv"></script>
+<script>
+    
+</script>
+</head>
+<body>
+<div class="box1">
+    <iframe src="Timeline.txt" frameborder="0"
+    width="105%"
+    height="100%">
+    </iframe>
+</div>
+<div class="mainbox">
+<canvas class="chart" id="Chart" style="width:100%;max-width:600px" height="675px"></canvas> 
+    <script type="text/javascript"> //Start of the script
+    var xValues = ["Times At Hive", "Times At Field", "Times Converted"," Times Rejoined", "Times Collected Wealth Clock", "Times Collected Stockings", "Times Collected Planters"];;
+    var yValues = [4, 2, 7, 9, 6, 2, 1]
+    var barColors = "#c7c7c7";
+    Chart.defaults.scale.gridLines.color = "#303030"
+    new Chart("Chart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }],
+        },
+        options: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: false,
+                text: "Honey Made In This Session"
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        display: false //this will remove only the text under the chart
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        drawOnChartArea: false //this will remove only the yAxes lines from the chart
+                    },
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    }); //End of the script
+    </script>
+    <div class="imgbee">
+    </div>
+    <div class="texzt1">
+        <p style="color: white;">
+            MACRO SESSION STATISTICS
+        </p>
+</div>
+</body>
+
+</html>

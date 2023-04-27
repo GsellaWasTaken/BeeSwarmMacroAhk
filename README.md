@@ -1,5 +1,11 @@
 Bee Swarm Simulator Pine Forest Macro a macro made in under 2 weeks with no past knowledge in coding
 
+DONWLOAD:
+
+You can find the latest release from the Releases tab in github
+
+To run the macro just run the Run.Ahk File
+
 Features:
 
 -Planters

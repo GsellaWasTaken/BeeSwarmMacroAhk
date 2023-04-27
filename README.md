@@ -10,7 +10,7 @@ Features:
 
 -Wealth clock/Stockings
 
--Macro session statistics webpage "Still under work"
+-[Local] Macro session statistics webpage "Still under work"
 
 Startup gui with choices such as:
 

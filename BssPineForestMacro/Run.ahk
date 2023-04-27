@@ -5,13 +5,15 @@ SetBatchLines, -1
 SetWorkingDir, %A_ScriptDir%
 
 CoordMode, Pixel, Screen
+TimeLineFile = %A_ScriptDir%\Webpage\Timeline.txt
 GuiFile := GuiData.txt
-TimelineFile = %A_ScriptDir%\Webpage\Timeline.txt
 PlanterFileName := "PlanterLog.txt"
 FieldFile := "Fields.txt"
 GuiFile := "GuiChoices.txt"
 sprinkList :="1||2|3|4|"
 convList :="Walk||Reset|"
+gpList :="Standard||"
+fieldList :="PineForest||"
 attemptfail := 0
 collectFail := 0
 tillClock := 0
@@ -29,23 +31,24 @@ Guii:
     Gui Destroy
     Gui, Show, w500 h300
     Gui, Font, s10
-    Gui, Add, Picture, y1 x375 w100 h80, %pictureBee%
     Gui, Add, GroupBox, x25 y0 w450 h275
-    Gui, Add, GroupBox, x25 y0 w150 h100
-    Gui, Add, GroupBox, x25 y90 w150 h100
+    Gui, Add, GroupBox, x25 y0 w225 h190
     Gui, Add, GroupBox, x25 y180 w450 h95
     Gui, Add, GroupBox, x154 y201 w302 h37
     Gui, Add, Button, x195 y251 w100 h40 gcloseButton, Confirm
-    Gui, Add, Text, y25 x75, Convert
-    Gui, Add, Text, y115 x68, Sprinklers
+    Gui, Add, Text, y25 x95, Convert route
+    Gui, Add, Text, y115 x81, Sprinklers amount
+    Gui, Add, Text, y25 x308, Gathering pattern
+    Gui, Add, Text, y115 x343, Field
     Gui, Add, Text, y215 x37, Private Server Link:
-    Gui, Add, Text, y90 x265 cGreen, More to Be Added?
     Gui, font, s8 cBlue
     Gui, Add, Text, y280 x20, F2=Pause F3=Stop F4=Return Gui
     Gui, Add, Text, y280 x390, Macro version: 1.4
     Gui, Font, s10 cBlack
-    Gui, Add, DropDownList, w80 h10 y50 x60 r2 vConvert_State, %convList%
-    Gui, Add, DropDownList, w80 h10 y140 x60 r4 vSprinkler_State, %sprinkList%
+    Gui, Add, DropDownList, w100 h10 y50 x85 r2 vConvert_State, %convList%
+    Gui, Add, DropDownList, w100 h10 y140 x85 r4 vSprinkler_State, %sprinkList%
+    Gui, Add, DropDownList, w100 h10 y50 x310 r2 vGather_Style, %gpList%
+    Gui, Add, DropDownList, w100 h10 y140 x310 r3 vField, %fieldList%
     Gui, Add, Edit, y210 x155 w300 h25 vpServer_State, %pServer_State%
     Gui, +AlwaysOnTop
     return ;Basic gui
@@ -208,29 +211,17 @@ walkToCannon: ;Simple route to cannon
         Planter2 := $Log2
         Planter3 := $Log3
     Sleep 100
-    If (Planter1 = "Planter1Done") ;Checks if planter1 needs to be collected
+    If (Planter1 = "Planter1Done" or Planter1 = "Planter1Wait") ;Checks if planter1 needs to be collected
     {
         goto, planterRuns
     }
-    If (Planter2 = "Planter2Done") ;Checks if planter2 needs to be collected
+    If (Planter2 = "Planter2Done" or Planter2 = "Planter2Wait") ;Checks if planter2 needs to be collected
     {
         goto, planterRuns
     }
-    If (Planter3 = "Planter3Done") ;Checks if planter3 needs to be collected
+    If (Planter3 = "Planter3Done" or Planter3 = "Planter3Wait") ;Checks if planter3 needs to be collected
     {
         goto, planterRuns
-    }
-    If (Planter1 = "Planter1Wait") ;Checks if planter1 needs to be placed
-    {
-        goto, placePine
-    }
-    If (Planter2 = "Planter2Wait") ;Checks if planter2 needs to be placed
-    {
-        goto, place%Field1%
-    }
-    If (Planter3 = "Planter3Wait") ;Checks if planter3 needs to be placed
-    {
-        goto, place%Field2%
     }
     Sleep 250
     FormatTime, TimeRn,, Time ;Omits time
@@ -253,9 +244,8 @@ walkToCannon: ;Simple route to cannon
 	Send {d up}
 	Sleep 250
 	Send {e}
-    goto, fly
 
-fly: ;Simple route to gathering field
+PineForest: ;Simple route to gathering field
     attemptFail = 0
     Sleep 1000
     Send {d down}
@@ -272,10 +262,6 @@ fly: ;Simple route to gathering field
     Send {d up}
     Send {s up}
     Sleep 1000
-    goto, fieldPosition
-
-fieldPosition: ;Checks if player made it into the field
-    Sleep 250
     FormatTime, TimeRn,, Time ;Omits time
     TimelineAdd = %TimeRn% Checking for field`n
     FileAppend, %TimelineAdd%, %TimelineFile%
@@ -305,7 +291,7 @@ fieldPosition: ;Checks if player made it into the field
 	pineList := "0x000000,0x000100,0x010200,0x000200" ;color needed in order for the check to work
 	Loop 25
 	{
-		PixelGetColor, color, 1900, 10
+		PixelGetColor, color, 1900, 10 ;Checks if player made it into the field
         Sleep 50
 		If color in %pineList%
 			break
@@ -550,554 +536,30 @@ planterRuns: ;These are run in order from top to bottom
     Sleep 250
     attemptFail = 0
     Sleep 250
-    If (Planter1 = "Planter1Done")
-        goto, collectPine
-    If (Planter2 = "Planter2Done")
-        goto, collect%Field1%
-    If (Planter3 = "Planter3Done")
-        goto, collect%Field2%
-
-placeRose:
-    Sleep 250
-    FormatTime, TimeRn,, Time ;Omits time
-    TimelineAdd = %TimeRn% Placing planter Rose`n
-    FileAppend, %TimelineAdd%, %TimelineFile%
-    Send {w down}
-    Sleep 1800
-    Send {w up}
-    Send {d down}
-    Sleep 8000
-    Send {d up}
-    Sleep 50
-    Send {space down}
-    Sleep 100
-    Send {space up}
-    Sleep 100
-    Send {d down}
-    Sleep 1250
-    Send {d up}
-    Sleep 250
-    Send {shift down}
-    Send {shift up}
-    Loop 4
-    {
-        Send {,}
-        Sleep 50
-    }
-    Send {e}
-    Send {shift down}
-    Send {shift up}
-    Send {a down}
-    Sleep 675
-    Send {space down}
-    Sleep 35
-    Send {space up}
-    Sleep 35
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Send {a up}
-    Sleep 2500
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 333
-    Send {w down}
-    Send {d down}
-    Sleep 2100
-    Send {w up}
-    Send {d up}
-    Send {s down}
-    Sleep 200
-    Send {s up}
-    Sleep 1000
-    goto, placePlanter2
-
-collectRose:
-    Sleep 250
-    FormatTime, TimeRn,, Time ;Omits time
-    TimelineAdd = %TimeRn% Collecting planter [Rose]`n
-    FileAppend, %TimelineAdd%, %TimelineFile%
-    Send {w down}
-    Sleep 1800
-    Send {w up}
-    Send {d down}
-    Sleep 8000
-    Send {d up}
-    Sleep 50
-    Send {space down}
-    Sleep 100
-    Send {space up}
-    Sleep 100
-    Send {d down}
-    Sleep 1250
-    Send {d up}
-    Sleep 250
-    Send {shift down}
-    Send {shift up}
-    Loop 4
-    {
-        Send {,}
-        Sleep 50
-    }
-    Send {e}
-    Send {shift down}
-    Send {shift up}
-    Send {a down}
-    Sleep 700
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Send {a up}
-    Sleep 2500
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 333
-    Send {w down}
-    Send {d down}
-    Sleep 2100
-    Send {w up}
-    Send {d up}
-    Send {s down}
-    Sleep 200
-    Send {s up}
-    Sleep 1000
-    PixelGetColor, color, 818, 45
-    Sleep 250
-    MouseMove, 818, 45
-    Sleep 250
-    While (color != 0xF2EEEE)
-    {
-        collectFail ++
-        Sleep 1000
-        FormatTime, TimeRn,, Time ;Omits time
-        TimelineAdd = %TimeRn% Failed to find planter [Rose] %collectFail%`n
-        FileAppend, %TimelineAdd%, %TimelineFile%
-        If collectFail = 2
+    If (Planter1 = "Planter1Done" or Planter1 = "Planter1Wait")
         {
-            Sleep 250
-            FormatTime, TimeRn,, Time ;Omits time
-            TimelineAdd = %TimeRn% Couldn't find planter with %collectFail% attempts Ignoring planter`n
-            FileAppend, %TimelineAdd%, %TimelineFile%
-            Sleep 250
-                break 1
-        }
-        goto, beginning
-    }
-    FileRead, Contents, %PlanterFileName%
-    Replace := RegExReplace("Log1`tLog2`tLog3`nPlanter1Wait`tPlanter2Wait`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
-    FileDelete, %PlanterFileName%
-    FileAppend, %Replace%, %PlanterFileName%
-    FileRead, Contents, %FieldFile%
-    Replace := RegExReplace("Field1`tField2`nSpider`tStrawberry", $) ;Rewrites data in a file called Fields.txt
-    FileDelete, %FieldFile%
-    FileAppend, %Replace%, %FieldFile%
-    Sleep 50
-    goto, collectPlanter
-
-placeStrawberry:
-    Sleep 250
-    FormatTime, TimeRn,, Time ;Omits time
-    TimelineAdd = %TimeRn% Placing planter [Strawberry]`n
-    FileAppend, %TimelineAdd%, %TimelineFile%
-    Send {w down}
-    Sleep 1800
-    Send {w up}
-    Send {d down}
-    Sleep 8000
-    Send {d up}
-    Sleep 50
-    Send {space down}
-    Sleep 100
-    Send {space up}
-    Sleep 100
-    Send {d down}
-    Sleep 1250
-    Send {d up}
-    Sleep 250
-    Send {shift down}
-    Send {shift up}
-    Loop 4
-    {
-        Send {,}
-        SLeep 50
-    }
-    Send {e}
-    Send {shift down}
-    Send {shift up}
-    Send {w down}
-    Sleep 750
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 250
-    Send {a down}
-    Sleep 1000
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 4000
-    Send {a up}
-    Sleep 3000
-    Send {w up}
-    Sleep 1000
-    goto, placePlanter3
-
-collectStrawberry:
-    Sleep 250
-    FormatTime, TimeRn,, Time ;Omits time
-    TimelineAdd = %TimeRn% Collecting planter [Strawberry]`n
-    FileAppend, %TimelineAdd%, %TimelineFile%
-    Send {w down}
-    Sleep 1800
-    Send {w up}
-    Send {d down}
-    Sleep 8000
-    Send {d up}
-    Sleep 50
-    Send {space down}
-    Sleep 100
-    Send {space up}
-    Sleep 100
-    Send {d down}
-    Sleep 1250
-    Send {d up}
-    Sleep 250
-    Send {shift down}
-    Send {shift up}
-    Loop 4
-    {
-        Send {,}
-        SLeep 50
-    }
-    Send {e}
-    Send {shift down}
-    Send {shift up}
-    Send {w down}
-    Sleep 750
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 250
-    Send {a down}
-    Sleep 1000
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 4000
-    Send {a up}
-    Sleep 3000
-    Send {w up}
-    Sleep 1000
-    PixelGetColor, color, 818, 45
-    Sleep 250
-    MouseMove, 818, 45
-    Sleep 250
-    While (color != 0xF2EEEE)
-    {
-        collectFail ++
-        Sleep 1000
         FormatTime, TimeRn,, Time ;Omits time
-        TimelineAdd = %TimeRn% Failed to find planter [Strawberry] %collectFail%`n
+        TimelineAdd = %TimeRn% Going to PineTree Field`n
         FileAppend, %TimelineAdd%, %TimelineFile%
-        If collectFail = 2
-        {
-            Sleep 250
-            FormatTime, TimeRn,, Time ;Omits time
-            TimelineAdd = %TimeRn% Couldn't find planter with %collectFail% attempts Ignoring planter`n
-            FileAppend, %TimelineAdd%, %TimelineFile%
-            Sleep 250
-                break 1
+            goto, pRun1
         }
-        goto, beginning
-    }
-    FileRead, Contents, %PlanterFileName%
-    Replace := RegExReplace("Log1`tLog2`tLog3`nPlanter1Wait`tPlanter2Wait`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
-    FileDelete, %PlanterFileName%
-    FileAppend, %Replace%, %PlanterFileName%
-    FileRead, Contents, %FieldFile%
-    Replace := RegExReplace("Field1`tField2`nSpider`tPumpkin", $) ;Rewrites data in a file called Fields.txt
-    FileDelete, %FieldFile%
-    FileAppend, %Replace%, %FieldFile%
-    Sleep 2S50
-    goto, collectPlanter
-
-
-placeSpider:
-    Sleep 250
-    FormatTime, TimeRn,, Time ;Omits time
-    TimelineAdd = %TimeRn% Placing planter [Spider]`n
-    FileAppend, %TimelineAdd%, %TimelineFile%
-    Send {w down}
-    Sleep 1800
-    Send {w up}
-    Send {d down}
-    Sleep 8000
-    Send {d up}
-    Sleep 50
-    Send {space down}
-    Sleep 100
-    Send {space up}
-    Sleep 100
-    Send {d down}
-    Sleep 1250
-    Send {d up}
-    Sleep 250
-    Send {shift down}
-    Send {shift up}
-    Loop 4
-    {
-        Send {,}
-        Sleep 50
-    }
-    Send {e}
-    Send {w down}
-    Sleep 1000
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 25
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 250
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 4000
-    Send {shift down}
-    Send {shift up}
-    Send {w up}
-    Send {a down}
-    Sleep 1750
-    Send {a up}
-    Sleep 1000
-    goto, placePlanter2 
-
-collectSpider:
-    Sleep 250
-    FormatTime, TimeRn,, Time ;Omits time
-    TimelineAdd = %TimeRn% Collecting planter [Spider]`n
-    FileAppend, %TimelineAdd%, %TimelineFile%
-    Send {w down}
-    Sleep 1800
-    Send {w up}
-    Send {d down}
-    Sleep 8000
-    Send {d up}
-    Sleep 50
-    Send {space down}
-    Sleep 100
-    Send {space up}
-    Sleep 100
-    Send {d down}
-    Sleep 1250
-    Send {d up}
-    Sleep 250
-    Send {shift down}
-    Send {shift up}
-    Loop 4
-    {
-        Send {,}
-        Sleep 50
-    }
-    Send {e}
-    Send {w down}
-    Sleep 1000
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 25
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 250
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 4000
-    Send {shift down}
-    Send {shift up}
-    Send {w up}
-    Send {a down}
-    Sleep 1750
-    Send {a up}
-    Sleep 1000
-    PixelGetColor, color, 818, 45
-    Sleep 250
-    MouseMove, 818, 45
-    Sleep 250
-    While (color != 0xF2EEEE)
-    {
-        collectFail ++
-        Sleep 1000
+    If (Planter2 = "Planter2Done" or Planter2 = "Planter2Wait")
+        {
         FormatTime, TimeRn,, Time ;Omits time
-        TimelineAdd = %TimeRn% Failed to find planter [Spider] %collectFail%`n
+        TimelineAdd = %TimeRn% Going to %Field1% Field`n
         FileAppend, %TimelineAdd%, %TimelineFile%
-        If collectFail = 2
-        {
-            Sleep 250
-            FormatTime, TimeRn,, Time ;Omits time
-            TimelineAdd = %TimeRn% Couldn't find planter with %collectFail% attempts Ignoring planter`n
-            FileAppend, %TimelineAdd%, %TimelineFile%
-            Sleep 250
-                break 1
+            goto, pRun%Field1%
         }
-        goto, beginning
-    }
-    FileRead, Contents, %PlanterFileName%
-    Replace := RegExReplace("Log1`tLog2`tLog3`nPlanter1Wait`tPlanter2Wait`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
-    FileDelete, %PlanterFileName%
-    FileAppend, %Replace%, %PlanterFileName%
-    FileRead, Contents, %FieldFile%
-    Replace := RegExReplace("Field1`tField2`nRose`tPumpkin", $) ;Rewrites data in a file called Fields.txt
-    FileDelete, %FieldFile%
-    FileAppend, %Replace%, %FieldFile%
-    Sleep 50
-    goto, collectPlanter
-
-placePumpkin:
-    Sleep 250
-    FormatTime, TimeRn,, Time ;Omits time
-    TimelineAdd = %TimeRn% Placing planter [Pumpkin]`n
-    FileAppend, %TimelineAdd%, %TimelineFile%
-    Send {w down}
-    Sleep 1800
-    Send {w up}
-    Send {d down}
-    Sleep 8000
-    Send {d up}
-    Sleep 50
-    Send {space down}
-    Sleep 100
-    Send {space up}
-    Sleep 100
-    Send {d down}
-    Sleep 1250
-    Send {d up}
-    Sleep 250
-    Send {e}
-    Sleep 1000
-    Send {d down}
-    Send {s down}
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 25
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 2750
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Send {d up}
-    Sleep 4500
-    Send {s up}
-    Send {a down}
-    Sleep 5000
-    Send {a up}
-    Sleep 50
-    Send {d down}
-    Sleep 1000
-    Send {d up}
-    Sleep 1000
-    goto, placePlanter3
-
-collectPumpkin:
-    Sleep 250
-    FormatTime, TimeRn,, Time ;Omits time
-    TimelineAdd = %TimeRn% Collecting planter [Pumpkin]`n
-    FileAppend, %TimelineAdd%, %TimelineFile%
-    Send {w down}
-    Sleep 1800
-    Send {w up}
-    Send {d down}
-    Sleep 8000
-    Send {d up}
-    Sleep 50
-    Send {space down}
-    Sleep 100
-    Send {space up}
-    Sleep 100
-    Send {d down}
-    Sleep 1250
-    Send {d up}
-    Sleep 250
-    Send {e}
-    Sleep 1000
-    Send {d down}
-    Send {s down}
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 25
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Sleep 2750
-    Send {space down}
-    Sleep 25
-    Send {space up}
-    Send {d up}
-    Sleep 4500
-    Send {s up}
-    Send {a down}
-    Sleep 5000
-    Send {a up}
-    Sleep 50
-    Send {d down}
-    Sleep 1000
-    Send {d up}
-    Sleep 1000
-    PixelGetColor, color, 818, 45
-    Sleep 250
-    MouseMove, 818, 45
-    Sleep 250
-    While (color != 0xF2EEEE)
-    {
-        collectFail ++
-        Sleep 1000
+    If (Planter3 = "Planter3Done" or Planter3 = "Planter3Wait")
+        {
         FormatTime, TimeRn,, Time ;Omits time
-        TimelineAdd = %TimeRn% Failed to find planter [Pumpkin] %collectFail%`n
+        TimelineAdd = %TimeRn% Going to %Field2% Field`n
         FileAppend, %TimelineAdd%, %TimelineFile%
-        If collectFail = 2
-        {
-            Sleep 250
-            FormatTime, TimeRn,, Time ;Omits time
-            TimelineAdd = %TimeRn% Couldn't find planter with %collectFail% attempts Ignoring planter`n
-            FileAppend, %TimelineAdd%, %TimelineFile%
-            Sleep 250
-                break 1
+            goto, pRun%Field2%
         }
-        goto, beginning
-    }
-    FileRead, Contents, %PlanterFileName%
-    Replace := RegExReplace("Log1`tLog2`tLog3`nPlanter1Wait`tPlanter2Wait`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
-    FileDelete, %PlanterFileName%
-    FileAppend, %Replace%, %PlanterFileName%
-    FileRead, Contents, %FieldFile%
-    Replace := RegExReplace("Field1`tField2`nRose`tStrawberry", $) ;Rewrites data in a file called Fields.txt
-    FileDelete, %FieldFile%
-    FileAppend, %Replace%, %FieldFile%
-    Sleep 50
-    goto, collectPlanter
 
-placePine:
+pRun1:
     Sleep 250
-    FormatTime, TimeRn,, Time ;Omits time
-    TimelineAdd = %TimeRn% Placing planter [PineForest]`n
-    FileAppend, %TimelineAdd%, %TimelineFile%
     Send {w down}
     Sleep 1800
     Send {w up}
@@ -1154,13 +616,251 @@ placePine:
     Sleep 1000
     Send {a up}
     Sleep 1000
-    goto, placePlanter1
-        
-collectPine:
+    If (Planter1 = "Planter1Wait")
+    {
+        FileRead, Contents, %PlanterFileName%
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`tPlanter2Done`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        FileDelete, %PlanterFileName%
+        FileAppend, %Replace%, %PlanterFileName%
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Placing planter [PineForest]`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+            goto, placePlanter1
+    }
+    Else
+        Sleep 250
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Collecting planter [PineForest]`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+        PixelGetColor, color, 818, 45
+        Sleep 250
+        MouseMove, 818, 45
+        Sleep 250
+        While (color != 0xF2EEEE)
+        {
+            collectFail ++
+            Sleep 1000
+            FormatTime, TimeRn,, Time ;Omits time
+            TimelineAdd = %TimeRn% Failed to find planter [PineForest] %collectFail%`n
+            FileAppend, %TimelineAdd%, %TimelineFile%
+            If collectFail = 2
+            {
+                Sleep 250
+                FormatTime, TimeRn,, Time ;Omits time
+                TimelineAdd = %TimeRn% Couldn't find planter with %collectFail% attempts Ignoring planter`n
+                FileAppend, %TimelineAdd%, %TimelineFile%
+                Sleep 250
+                    break 1
+            }
+            goto, beginning
+        }
+        Sleep 250
+        FileRead, Contents, %PlanterFileName%
+        Replace := RegExReplace("Log1`tLog2`tLog3`nPlanter1Wait`tPlanter2Done`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        FileDelete, %PlanterFileName%
+        FileAppend, %Replace%, %PlanterFileName%
+        Sleep 250
+        goto, collectPlanter
+
+pRunRose:
     Sleep 250
-    FormatTime, TimeRn,, Time ;Omits time
-    TimelineAdd = %TimeRn% Collecting planter [PineForest]`n
-    FileAppend, %TimelineAdd%, %TimelineFile%
+    Send {w down}
+    Sleep 1800
+    Send {w up}
+    Send {d down}
+    Sleep 8000
+    Send {d up}
+    Sleep 50
+    Send {space down}
+    Sleep 100
+    Send {space up}
+    Sleep 100
+    Send {d down}
+    Sleep 1250
+    Send {d up}
+    Sleep 250
+    Send {shift down}
+    Send {shift up}
+    Loop 4
+    {
+        Send {,}
+        Sleep 50
+    }
+    Send {e}
+    Send {shift down}
+    Send {shift up}
+    Send {a down}
+    Sleep 675
+    Send {space down}
+    Sleep 35
+    Send {space up}
+    Sleep 35
+    Send {space down}
+    Sleep 25
+    Send {space up}
+    Send {a up}
+    Sleep 2500
+    Send {space down}
+    Sleep 25
+    Send {space up}
+    Sleep 333
+    Send {w down}
+    Send {d down}
+    Sleep 2100
+    Send {w up}
+    Send {d up}
+    Send {s down}
+    Sleep 200
+    Send {s up}
+    Sleep 1000
+    If (Planter2 = "Planter2Wait")
+    {
+        FileRead, Contents, %PlanterFileName%
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        FileDelete, %PlanterFileName%
+        FileAppend, %Replace%, %PlanterFileName%
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Placing planter [Rose]`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+            goto, placePlanter2
+    }
+    Else
+        Sleep 250
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Collecting planter [Rose]`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+        PixelGetColor, color, 818, 45
+        Sleep 250
+        MouseMove, 818, 45
+        Sleep 250
+        While (color != 0xF2EEEE)
+        {
+            collectFail ++
+            Sleep 1000
+            FormatTime, TimeRn,, Time ;Omits time
+            TimelineAdd = %TimeRn% Failed to find planter [Rose] %collectFail%`n
+            FileAppend, %TimelineAdd%, %TimelineFile%
+            If collectFail = 2
+            {
+                Sleep 250
+                FormatTime, TimeRn,, Time ;Omits time
+                TimelineAdd = %TimeRn% Couldn't find planter with %collectFail% attempts Ignoring planter`n
+                FileAppend, %TimelineAdd%, %TimelineFile%
+                Sleep 250
+                    break 1
+            }
+            goto, beginning
+        }
+        FileRead, Contents, %PlanterFileName%
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`tPlanter2Wait`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        FileDelete, %PlanterFileName%
+        FileAppend, %Replace%, %PlanterFileName%
+        FileRead, Contents, %FieldFile%
+        Replace := RegExReplace("Field1`tField2`nSpider`tStrawberry", $) ;Rewrites data in a file called Fields.txt
+        FileDelete, %FieldFile%
+        FileAppend, %Replace%, %FieldFile%
+        Sleep 250
+        goto, collectPlanter
+
+pRunSpider:
+    Sleep 250
+    Send {w down}
+    Sleep 1800
+    Send {w up}
+    Send {d down}
+    Sleep 8000
+    Send {d up}
+    Sleep 50
+    Send {space down}
+    Sleep 100
+    Send {space up}
+    Sleep 100
+    Send {d down}
+    Sleep 1250
+    Send {d up}
+    Sleep 250
+    Send {shift down}
+    Send {shift up}
+    Loop 4
+    {
+        Send {,}
+        Sleep 50
+    }
+    Send {e}
+    Send {w down}
+    Sleep 1000
+    Send {space down}
+    Sleep 25
+    Send {space up}
+    Sleep 25
+    Send {space down}
+    Sleep 25
+    Send {space up}
+    Sleep 250
+    Send {space down}
+    Sleep 25
+    Send {space up}
+    Sleep 4000
+    Send {shift down}
+    Send {shift up}
+    Send {w up}
+    Send {a down}
+    Sleep 1750
+    Send {a up}
+    Sleep 1000
+    If (Planter2 = "Planter2Wait")
+    {
+        Sleep 250
+        FileRead, Contents, %PlanterFileName%
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        FileDelete, %PlanterFileName%
+        FileAppend, %Replace%, %PlanterFileName%
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Placing planter [Spider]`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+            goto, placePlanter2 
+    }
+    Else
+        Sleep 250
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Collecting planter [Spider]`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+        PixelGetColor, color, 818, 45
+        Sleep 250
+        MouseMove, 818, 45
+        Sleep 250
+        While (color != 0xF2EEEE)
+        {
+            collectFail ++
+            Sleep 1000
+            FormatTime, TimeRn,, Time ;Omits time
+            TimelineAdd = %TimeRn% Failed to find planter [Spider] %collectFail%`n
+            FileAppend, %TimelineAdd%, %TimelineFile%
+            If collectFail = 2
+            {
+                Sleep 250
+                FormatTime, TimeRn,, Time ;Omits time
+                TimelineAdd = %TimeRn% Couldn't find planter with %collectFail% attempts Ignoring planter`n
+                FileAppend, %TimelineAdd%, %TimelineFile%
+                Sleep 250
+                    break 1
+            }
+            goto, beginning
+        }
+        Sleep 250
+        FileRead, Contents, %PlanterFileName%
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`tPlanter2Wait`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        FileDelete, %PlanterFileName%
+        FileAppend, %Replace%, %PlanterFileName%
+        FileRead, Contents, %FieldFile%
+        Replace := RegExReplace("Field1`tField2`nRose`tPumpkin", $) ;Rewrites data in a file called Fields.txt
+        FileDelete, %FieldFile%
+        FileAppend, %Replace%, %FieldFile%
+        Sleep 50
+        goto, collectPlanter
+
+pRunPumpkin:
+    Sleep 250
     Send {w down}
     Sleep 1800
     Send {w up}
@@ -1180,7 +880,6 @@ collectPine:
     Sleep 1000
     Send {d down}
     Send {s down}
-    Sleep 10
     Send {space down}
     Sleep 25
     Send {space up}
@@ -1188,64 +887,168 @@ collectPine:
     Send {space down}
     Sleep 25
     Send {space up}
-    Sleep 4500
+    Sleep 2750
     Send {space down}
     Sleep 25
     Send {space up}
     Send {d up}
+    Sleep 4500
     Send {s up}
+    Send {a down}
+    Sleep 5000
+    Send {a up}
+    Sleep 50
+    Send {d down}
     Sleep 1000
-    Loop 3
+    Send {d up}
+    Sleep 1000
+    If (Planter3 = "Planter3Wait")
     {
-            Send {.}
-            Sleep 50
+        Sleep 250
+        FileRead, Contents, %PlanterFileName%
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`t0", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        FileDelete, %PlanterFileName%
+        FileAppend, %Replace%, %PlanterFileName%
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Placing planter [Pumpkin]`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+            goto, placePlanter3
     }
+    Else
+        Sleep 250
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Collecting planter [Pumpkin]`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+        PixelGetColor, color, 818, 45
+        Sleep 250
+        MouseMove, 818, 45
+        Sleep 250
+        While (color != 0xF2EEEE)
+        {
+            collectFail ++
+            Sleep 1000
+            FormatTime, TimeRn,, Time ;Omits time
+            TimelineAdd = %TimeRn% Failed to find planter [Pumpkin] %collectFail%`n
+            FileAppend, %TimelineAdd%, %TimelineFile%
+            If collectFail = 2
+            {
+                Sleep 250
+                FormatTime, TimeRn,, Time ;Omits time
+                TimelineAdd = %TimeRn% Couldn't find planter with %collectFail% attempts Ignoring planter`n
+                FileAppend, %TimelineAdd%, %TimelineFile%
+                Sleep 250
+                    break 1
+            }
+            goto, beginning
+        }
+        Sleep 250
+        FileRead, Contents, %PlanterFileName%
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        FileDelete, %PlanterFileName%
+        FileAppend, %Replace%, %PlanterFileName%
+        FileRead, Contents, %FieldFile%
+        Replace := RegExReplace("Field1`tField2`nRose`tStrawberry", $) ;Rewrites data in a file called Fields.txt
+        FileDelete, %FieldFile%
+        FileAppend, %Replace%, %FieldFile%
+        Sleep 250
+        goto, collectPlanter
+
+pRunStrawberry:
+    Sleep 250
+    Send {w down}
+    Sleep 1800
+    Send {w up}
+    Send {d down}
+    Sleep 8000
+    Send {d up}
     Sleep 50
     Send {space down}
-    Sleep 25
+    Sleep 100
     Send {space up}
-    Sleep 333
+    Sleep 100
+    Send {d down}
+    Sleep 1250
+    Send {d up}
+    Sleep 250
+    Send {shift down}
+    Send {shift up}
+    Loop 4
+    {
+        Send {,}
+        SLeep 50
+    }
+    Send {e}
+    Send {shift down}
+    Send {shift up}
+    Send {w down}
+    Sleep 750
     Send {space down}
     Sleep 25
     Send {space up}
+    Send {space down}
     Sleep 25
-    Send {w down}
-    Sleep 5500
-    Send {w Up}
-    Sleep 100
-    Send {,}
-    Sleep 100
+    Send {space up}
+    Sleep 250
     Send {a down}
     Sleep 1000
+    Send {space down}
+    Sleep 25
+    Send {space up}
+    Sleep 4000
     Send {a up}
+    Sleep 3000
+    Send {w up}
     Sleep 1000
-    PixelGetColor, color, 818, 45
-    Sleep 250
-    MouseMove, 818, 45
-    Sleep 250
-    While (color != 0xF2EEEE)
+    If (Planter3 = "Planter3Wait")
     {
-        collectFail ++
-        Sleep 1000
+        Sleep 250
+        FileRead, Contents, %PlanterFileName%
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`t0", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        FileDelete, %PlanterFileName%
+        FileAppend, %Replace%, %PlanterFileName%
         FormatTime, TimeRn,, Time ;Omits time
-        TimelineAdd = %TimeRn% Failed to find planter [PineForest] %collectFail%`n
+        TimelineAdd = %TimeRn% Placing planter [Strawberry]`n
         FileAppend, %TimelineAdd%, %TimelineFile%
-        If collectFail = 2
-        {
-            Sleep 250
-            FormatTime, TimeRn,, Time ;Omits time
-            TimelineAdd = %TimeRn% Couldn't find planter with %collectFail% attempts Ignoring planter`n
-            FileAppend, %TimelineAdd%, %TimelineFile%
-            Sleep 250
-                break 1
-        }
-        goto, beginning
+        goto, placePlanter3
     }
-    FileRead, Contents, %PlanterFileName%
-    Replace := RegExReplace("Log1`tLog2`tLog3`nPlanter1Wait`tPlanter2Done`tPlanter3Done", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
-    FileDelete, %PlanterFileName%
-    FileAppend, %Replace%, %PlanterFileName%
-    goto, collectPlanter
+    Else
+        Sleep 250
+        FormatTime, TimeRn,, Time ;Omits time
+        TimelineAdd = %TimeRn% Collecting planter [Strawberry]`n
+        FileAppend, %TimelineAdd%, %TimelineFile%
+        PixelGetColor, color, 818, 45
+        Sleep 250
+        MouseMove, 818, 45
+        Sleep 250
+        While (color != 0xF2EEEE)
+        {
+            collectFail ++
+            Sleep 1000
+            FormatTime, TimeRn,, Time ;Omits time
+            TimelineAdd = %TimeRn% Failed to find planter [Strawberry] %collectFail%`n
+            FileAppend, %TimelineAdd%, %TimelineFile%
+            If collectFail = 2
+            {
+                Sleep 250
+                FormatTime, TimeRn,, Time ;Omits time
+                TimelineAdd = %TimeRn% Couldn't find planter with %collectFail% attempts Ignoring planter`n
+                FileAppend, %TimelineAdd%, %TimelineFile%
+                Sleep 250
+                    break 1
+            }
+            goto, beginning
+        }
+        Sleep 250
+        FileRead, Contents, %PlanterFileName%
+        Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Wait", $) ;Rewrites data in a file called PlanterLog.txt so the macro doesn't go back to that same field
+        FileDelete, %PlanterFileName%
+        FileAppend, %Replace%, %PlanterFileName%
+        FileRead, Contents, %FieldFile%
+        Replace := RegExReplace("Field1`tField2`nSpider`tPumpkin", $) ;Rewrites data in a file called Fields.txt
+        FileDelete, %FieldFile%
+        FileAppend, %Replace%, %FieldFile%
+        Sleep 250
+        goto, collectPlanter
 
 wealthRun: ;Simple run that Collects Wealth clock and Stockings
     Sleep 250
@@ -1437,35 +1240,18 @@ placePlanter1: ;Simple planter placing action
     Sleep 250
     Send {5}
     Sleep 333
-    FileRead, Contents, %PlanterFileName%
-    Replace := RegExReplace("Log1`tLog2`tLog3`n0`tPlanter2Wait`tPlanter3Wait", $)
-    FileDelete, %PlanterFileName%
-    FileAppend, %Replace%, %PlanterFileName%
-    Sleep 100
     goto, beginning
 
 placePlanter2: ;Simple planter placing action
     Sleep 250
     Send {6}
     Sleep 333
-    Sleep 250
-    FileRead, Contents, %PlanterFileName%
-    Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`tPlanter3Wait", $)
-    FileDelete, %PlanterFileName%
-     FileAppend, %Replace%, %PlanterFileName%
-    Sleep 100
     goto, beginning
 
 placePlanter3: ;Simple planter placing action
     Sleep 250
     Send {7}
     Sleep 333
-    Sleep 250
-    FileRead, Contents, %PlanterFileName%
-    Replace := RegExReplace("Log1`tLog2`tLog3`n0`t0`t0", $)
-    FileDelete, %PlanterFileName%
-    FileAppend, %Replace%, %PlanterFileName%
-    Sleep 100
     goto, beginning
     
 restart: ;If player had too many fails in a row with checks then the player rejoins
@@ -1584,7 +1370,7 @@ start:
 FileDelete, %TimelineFile%
 If Not FileExist(FieldFile)
 {
-    FileAppend,Field1`tField2`nSpider`tPumpkin, %FieldFile%
+    FileAppend,Field1`tField2`nSpider`tPumpkin, %FieldFile% 
 }
 Sleep 250
 FileAppend, 

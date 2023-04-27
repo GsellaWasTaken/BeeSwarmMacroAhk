@@ -30,7 +30,7 @@ Startup gui with choices such as:
 
 Have ROBLOX open before starting the macro!
 
-Don't use microsoft store version or roblox!
+Don't use microsoft store version of roblox!
 
 This macro is not very suitable for old computers!
 

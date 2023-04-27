@@ -1,9 +1,10 @@
 Bee Swarm Simulator Pine Forest Macro a macro made in under 2 weeks with no past knowledge in coding
 
 DOWNLOAD:
-1. You can find the latest release from the Releases tab in github
-2. Extract the zipfile into you desired location
-3. To use the macro just run the Run.Ahk File
+1. You can find the latest release from the Releases tab in github and download if from there!
+2. Extract the zipfile into you desired location.
+3. To use the macro just run the Run.Ahk File.
+4. Enjoy the free honey and mats!
 
 Features:
 
@@ -23,9 +24,11 @@ Startup gui with choices such as:
 
 -Sprinkler amount [1,2,3,4]
 
--Option to add private server link.
+-Option to add a private server link.
 
 --IMPORTANT--
+
+Have ROBLOX open before starting the macro!
 
 Don't use microsoft store version or roblox!
 

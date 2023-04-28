@@ -49,7 +49,7 @@ Guii:
     Gui, Add, Text, y215 x37, Private Server Link:
     Gui, font, s8 cBlue
     Gui, Add, Text, y280 x20, F2=Pause F3=Stop F4=Return
-    Gui, Add, Text, y280 x390, Macro version: 1.4.3
+    Gui, Add, Text, y280 x390, Macro version: 1.4.4
     Gui, Font, s10 cBlack
     Gui, Add, DropDownList, w100 h10 y40 x50 r2 vConvert_State, %convList%
     Gui, Add, DropDownList, w100 h10 y100 x50 r4 vSprinkler_State, %sprinkList%
@@ -1254,8 +1254,9 @@ Loop 5
 {
     Mousemove, 866, 686
     Click, Left
-    Sleep 150
+    Sleep 250
     Mousemove, 865, 685
+    Click, Left
 }
 Sleep 50
 Send {a down}
@@ -1437,7 +1438,6 @@ Loop Read, %GuiFile%
         loop_State = %data2%
     }
 }
-MsgBox, %loop_State%
 Sleep 1250
 goto, Guii
 

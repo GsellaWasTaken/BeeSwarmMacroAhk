@@ -24,7 +24,7 @@ While Toggle
         Sleep 60000
         FileAppend,i, %CounterFile%
         FileRead, Count, %CounterFile%
-        Sleep 500
+        Sleep 250
         If (Count > "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
         {
             goto, fileNew

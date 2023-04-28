@@ -15,7 +15,6 @@ convList :="Walk||Reset|"
 gpList :="Typewriter||"
 fieldList :="PineForest||Strawberry|"
 movmntCrrList := "Right||Left|"
-loopList := "5||1|2|3|4|6|7|8|9|10"
 attemptfail := 0
 collectFail := 0
 tillClock := 0
@@ -37,35 +36,43 @@ Guii:
     Gui, Add, GroupBox, x25 y0 w275 h190
     Gui, Add, GroupBox, x25 y180 w450 h95
     Gui, Add, GroupBox, x154 y201 w302 h37
+    Gui, Add, GroupBox, x174 y141 w102 h37
     Gui, Add, Button, x195 y251 w100 h40 gcloseButton, Confirm
     Gui, Add, Text, y20 x60, Convert route
     Gui, Add, Text, y80 x46, Sprinklers amount
     Gui, Add, Text, y20 x174, Gathering pattern
     Gui, Add, Text, y80 x208, Field
     Gui, Add, Text, y154 x45, Gather time [Loops]:
+    Gui, Font, s9 cBlack
+    Gui, Add, Text, y22 x307, Gathering time should be set`nto 7-10 for best results.`nLeave private server link empty`nif you don't have one!`nPlanters in hotbar slots 5,6,7!
+    Gui, Font, s10 cBlack
     Gui, Add, Text, y215 x37, Private Server Link:
     Gui, font, s8 cBlue
     Gui, Add, Text, y280 x20, F2=Pause F3=Stop F4=Return
-    Gui, Add, Text, y280 x390, Macro version: 1.4.2
+    Gui, Add, Text, y280 x390, Macro version: 1.4.3
     Gui, Font, s10 cBlack
     Gui, Add, DropDownList, w100 h10 y40 x50 r2 vConvert_State, %convList%
     Gui, Add, DropDownList, w100 h10 y100 x50 r4 vSprinkler_State, %sprinkList%
     Gui, Add, DropDownList, w100 h10 y40 x175 r2 vGather_Style, %gpList%
     Gui, Add, DropDownList, w100 h10 y100 x175 r3 vField, %fieldList%
-    Gui, Add, DropDownList, w100 h25 y150 x175 r10 vloop_State, %loopList%
+    Gui, Add, Edit, w100 h25 y150 x175 vloop_State, %loop_State% 
     Gui, Add, Edit, y210 x155 w300 h25 vpServer_State, %pServer_State%
     Gui, +AlwaysOnTop
     return ;Basic gui
 
 closeButton:
-    Gui Submit
-    FileDelete, %GuiFile%
-    FileAppend,1Choice`n%pServer_State%,%GuiFile%
-    If pServer_State =
-    {
-        pServer_State = https://www.roblox.com/games/4189852503?privateServerLinkCode=79206701614713356673660100749569 ;If no private server this will become the join link
-    }
-    goto, graphicsDown
+Gui Submit
+FileDelete, %GuiFile%
+FileAppend, 
+(
+1Choice,2Choice
+%pServer_State%,%loop_State%
+),%GuiFile%
+If pServer_State =
+{
+    pServer_State = https://www.roblox.com/games/4189852503?privateServerLinkCode=79206701614713356673660100749569 ;If no private server this will become the join link
+}
+goto, graphicsDown
 
 graphicsDown:
     Sleep 1000
@@ -119,7 +126,11 @@ beginning: ;Resets player position
     goto, hiveCheck
 
 hiveCheck: ;Checks to make sure that camera is in correct angle
+    FormatTime, TimeRn,, Time ;Omits time
+    TimelineAdd = %TimeRn% Resetting player`n
     FileAppend,At Hive`n, %CounterFile%
+    Sleep 250
+    hiveList := "0x00FFFF,0x2CFFFF,0x2EFFFF"
     Loop 6
     {
         Send {pgup}
@@ -139,17 +150,17 @@ hiveCheck: ;Checks to make sure that camera is in correct angle
 		PixelGetColor, color, 818, 824
         MouseMove, 818, 824
 		Sleep 100
-		IfEqual, color, 0x00FFFF
+		If color in %hiveList%
             break
         PixelGetColor, color, 960, 818
         MouseMove, 960, 818
 		Sleep 100
-		IfEqual, color, 0x00FFFF
+		If color in %hiveList%
             break
         PixelGetColor, color, 1118, 828
         MouseMove, 1118, 828
         Sleep 100
-        IfEqual, color, 0x00FFFF
+        If color in %hiveList%
             break
     }
     Sleep 250
@@ -1417,10 +1428,15 @@ y
 -----------------------------------------------------------
 %TimeRn% Macro Started`n
 ), %TimelineFile%
-FileRead, Content, %GuiFile% ;Gets data from a file called Fields.txt and saves the data into variables
-Loop, Parse, Content, `n, `r
-    RegExMatch(A_LoopField, "(?<1Choice>.+)", $)
-    pServer_State := $1Choice
+Loop Read, %GuiFile%
+{
+    Loop, parse, A_LoopReadLine, %A_Tab%
+    {
+        stringsplit, data, A_LoopField, `,
+        pServer_State = %data1%
+        loop_State = %data2%
+    }
+}
 Sleep 1250
 goto, Guii
 

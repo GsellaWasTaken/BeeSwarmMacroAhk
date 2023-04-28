@@ -457,8 +457,8 @@ gTypewriter: ;Simple gathering loop
         Sleep 100
         click, up
         Sleep 500
-        goto, beforeBack
     }
+    goto, beforeBack
 
 ;-------------------------END-OF-GATHERING-LOOPS-------------------------
 
@@ -1437,6 +1437,7 @@ Loop Read, %GuiFile%
         loop_State = %data2%
     }
 }
+MsgBox, %loop_State%
 Sleep 1250
 goto, Guii
 

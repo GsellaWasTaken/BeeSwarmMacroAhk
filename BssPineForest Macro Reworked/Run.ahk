@@ -76,8 +76,6 @@ goto, graphicsDown
 
 graphicsDown:
     Sleep 1000
-    Click, Left
-    Sleep 250
     PixelGetColor, color, 14, 12 ;Lines 77-84 checks if game is in bordered fullscreen and corrects it to borderless
     MouseMove, 14, 12
 	Sleep 250
@@ -454,10 +452,10 @@ gTypewriter: ;Simple gathering loop
         Send {a down}
         Sleep 275
         Send {a up}
-        Sleep 100
-        click, up
         Sleep 500
     }
+    Sleep 100
+    click, up
     goto, beforeBack
 
 ;-------------------------END-OF-GATHERING-LOOPS-------------------------

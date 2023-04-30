@@ -557,13 +557,13 @@ walkToHivePineForest: ;Returns player to the hive via walking
     Sleep 250
     Send {shift down}
     Send {shift up}
-    Sleep 150
+    Sleep 250
     Send {s down}
     Sleep 100
     Send {s up}
     Sleep 250
     Send {space down}
-    Sleep 50
+    Sleep 100
     Send {space up}
     Sleep 100
     Send {w down}
@@ -581,7 +581,7 @@ walkToHivePineForest: ;Returns player to the hive via walking
     Sleep 2750
     Send {w up}
     Send {d down}
-    Sleep 4000
+    Sleep 3500
     Send {d up}
     Send {w down}
     Sleep 250
@@ -631,11 +631,15 @@ findHive: ;A snip of code that that moves the player to each hiveslot and checks
         }
         Sleep 50
         Send {w down}
+        Sleep 100
+        Send {d down}
         Sleep 1250
+        Send {d up}
+        Sleep 250
         Send {w up}
         Sleep 50
         Send {d down}
-        Sleep 8000
+        Sleep 7000
         Send {d up}
         Send {w down}
         Sleep 1000
@@ -1302,7 +1306,7 @@ restart: ;If player had too many fails in a row with checks then the player rejo
     FileAppend, %TimelineAdd%, %TimelineFile%
     Sleep 250
     Run, %pServer_State%
-    Sleep 20000
+    Sleep 2750
     colorNot := True
     countNot := 0
     Sleep 500

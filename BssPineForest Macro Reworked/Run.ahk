@@ -49,7 +49,7 @@ Guii:
     Gui, Add, Text, y215 x37, Private Server Link:
     Gui, font, s8 cBlue
     Gui, Add, Text, y280 x20, F2=Pause F3=Stop F4=Return
-    Gui, Add, Text, y280 x390, Macro version: 1.4.4
+    Gui, Add, Text, y280 x390, Macro version: 1.4.5
     Gui, Font, s10 cBlack
     Gui, Add, DropDownList, w100 h10 y40 x50 r2 vConvert_State, %convList%
     Gui, Add, DropDownList, w100 h10 y100 x50 r4 vSprinkler_State, %sprinkList%
@@ -198,7 +198,7 @@ convert: ;Converts backbag/balloon and stops after they are converted
             gettingColor := False
         Sleep 1000
         gccount ++
-        if gccount = 240
+        if gccount = 400
         {
             Sleep 250
             FormatTime, TimeRn,, Time ;Omits time
@@ -245,7 +245,6 @@ walkToCannon: ;Simple route to cannon
     TimelineAdd = %TimeRn% Walking to cannon`n
     FileAppend, %TimelineAdd%, %TimelineFile%
     Sleep 250
-    Sleep 150
     Send {w down}
     Sleep 1800
     Send {w up}
@@ -403,10 +402,11 @@ gTypewriter: ;Simple gathering loop
     Loop %loop_State%
     {
         click, down
-        Loop 15
+        Loop 14
         {
             Send {a down}
             Sleep 899
+            Send {a up}
             PixelGetColor, Color, 1222, 7 ;Checks if backbag is full and returns player to the hive
             IfEqual, Color, 0x1700F7
             {
@@ -425,7 +425,6 @@ gTypewriter: ;Simple gathering loop
                 }
                 goto, walkToHive%Field% ;Runs if player chose to convert via walking
             }
-            Send {a up}
             Loop 4
             {
                 Send {s down}
@@ -446,7 +445,7 @@ gTypewriter: ;Simple gathering loop
         Sleep 1000
         Send {w up}
         Send {d down}
-        Sleep 2500
+        Sleep 3250
         Send {d up}
         Sleep 50
         Send {a down}
@@ -464,7 +463,7 @@ beforeBack:
     FormatTime, TimeRn,, Time ;Omits time
     TimelineAdd = %TimeRn% Gathering has ended`n
     FileAppend, %TimelineAdd%, %TimelineFile%
-    Sleep 100
+    Sleep 250
     tillClock ++
     If (Convert_State = "Reset") ;Returns player to the hive via resetting
     {
@@ -475,11 +474,13 @@ beforeBack:
         Sleep 250
         goto, beginning
     }
+    Sleep 250
     goto, walkToHive%Field%
 
 ;-------------------------WALK-BACKS-------------------------
 
 walkToHiveStrawberry: ;Returns player to the hive via walking
+    Sleep 500
     Send {w down}
     Sleep 1000
     Send {w up}
@@ -528,15 +529,15 @@ walkToHiveStrawberry: ;Returns player to the hive via walking
     goto, findHive
 
 walkToHivePineForest: ;Returns player to the hive via walking
-    Sleep 250
+    Sleep 500
     loop 2
     {
     Send {.}
-    Sleep 50
+    Sleep 75
     }
-    Sleep 50
+    Sleep 250
     Send {w down}
-    Sleep 1750
+    Sleep 2500
     Send {w up}
     Send {d down}
 	Sleep 12000
@@ -600,70 +601,48 @@ walkToHivePineForest: ;Returns player to the hive via walking
 findHive: ;A snip of code that that moves the player to each hiveslot and checks if it's theirs, then stops and starts converting
     MouseMove, 818, 45
     hiveNotFound = 0
-    Loop 3
+    Send {a down}
+    Sleep 150
+    While color != 0xF2EEEE
     {
         hiveNotFound ++
-        Loop 5
-        {	
-            PixelGetColor, color, 818, 45 ;Checks for own hive
-            IfEqual, color, 0xF2EEEE
-            {
-                Sleep 250
-                FormatTime, TimeRn,, Time ;Omits time
-                TimelineAdd = %TimeRn% Converting pollen`n
-                FileAppend, %TimelineAdd%, %TimelineFile%
-                goto, convert 
-            }
-            Send {a down}
-            Sleep 1200
-            Send {a up}
-            Sleep 555
-            PixelGetColor, color, 818, 45
-            IfEqual, color, 0xF2EEEE
-            {
-                Sleep 250
-                FormatTime, TimeRn,, Time ;Omits time
-                TimelineAdd = %TimeRn% Converting pollen`n
-                FileAppend, %TimelineAdd%, %TimelineFile%
-                Sleep 250
-                goto, convert 
-            }
+        PixelGetColor, color, 818, 45 ;Checks for own hive
+        If hiveNotFound = 555
+        {
+            attemptFail ++
+            Sleep 250
+            FormatTime, TimeRn,, Time ;Omits time
+            TimelineAdd = %TimeRn% Error hive not found`n
+            FileAppend, %TimelineAdd%, %TimelineFile%
+            Sleep 100
+            goto, beginning
         }
-        Sleep 50
-        Send {w down}
-        Sleep 100
-        Send {d down}
-        Sleep 1250
-        Send {d up}
-        Sleep 250
-        Send {w up}
-        Sleep 50
-        Send {d down}
-        Sleep 7000
-        Send {d up}
-        Send {w down}
-        Sleep 1000
-        Send {w up}
-        Send {s down}
-        Sleep 700
-        Send {s up}
-        Send {a down}
-        Sleep 300
-        Send {a up}
-        Sleep 500
     }
-    If (hiveNotFound = 3) ;Failed to locate hive
+    Send {a up}
+    Sleep 2500
+    hiveNotFound = 0
+    While color != 0xF2EEEE
     {
-        attemptFail ++
+        hiveNotFound ++
+        Send {d down}
         Sleep 250
-        FormatTime, TimeRn,, Time ;Omits time
-        TimelineAdd = %TimeRn% Error hive not found`n
-        FileAppend, %TimelineAdd%, %TimelineFile%
-        Sleep 100
-        goto, beginning
+        Send {d up}
+        Sleep 500
+        PixelGetColor, color, 818, 45 ;Checks for own hive
+        Sleep 1500
+        If hiveNotFound = 5
+        {
+            attemptFail ++
+            Sleep 250
+            FormatTime, TimeRn,, Time ;Omits time
+            TimelineAdd = %TimeRn% Error hive not found`n
+            FileAppend, %TimelineAdd%, %TimelineFile%
+            Sleep 100
+            goto, beginning
+        }
     }
     Sleep 1000
-    goto, beginning
+    goto, convert
 
 ;-------------------------PLANTERS-------------------------
 
@@ -794,12 +773,13 @@ pRunRose:
     Send {space down}
     Sleep 50
     Send {space up}
-    Sleep 333
+    Sleep 750
     Send {w down}
     Send {d down}
-    Sleep 2100
+    Sleep 2500
     Send {w up}
     Send {d up}
+    Sleep 500
     Send {s down}
     Sleep 200
     Send {s up}

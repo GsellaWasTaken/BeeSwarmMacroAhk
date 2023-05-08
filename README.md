@@ -44,6 +44,8 @@ Planters hotbar slots [5],[6],[7]
 
 Preferably use: [5]blueclay-/hydroponic-, [6]pestecide- and [7]tacky-/petal- planters.
 
+Own few gifted bees
+
 Movespeed [28]
 
 After these steps you should be all set and ready to macro!
